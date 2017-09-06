@@ -1,0 +1,1 @@
+ground:g1.png;snake:snake1.png;
