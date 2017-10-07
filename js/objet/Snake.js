@@ -3,12 +3,12 @@ var DIRECTION = {
 	DROITE: 3,
 	BAS: 0,
 	GAUCHE: 1
-}
+};
 //objet Snake
-function Snake (sprite,no_controlleur){
+function Snake (texture,no_controlleur){
 	CaseCont.call(this,new Array(),new Array());
 	console.log("Snake : Création d'un serpent .");
-	this.sprite=sprite;
+	this.texture=texture;
 	this .score = 0;
 	//longeur du serpent
 	this.length=2;
@@ -17,30 +17,39 @@ function Snake (sprite,no_controlleur){
 Snake.prototype = Object.create(CaseCont.prototype);
 Snake.prototype.constructor = Snake;
 
-//on regarde sur quoi se trouve la tête du serpent
-Snake.prototype.actuContact = function(map){
+Snake.prototype.update = function(map){
+	//on regarde sur quoi se trouve la tête du serpent
 	if(this.life){
-		var teteX = this.positionX[0],teteY = this.positionY[0]
+		var pos_tete = {x:this.positionX[0],y:this.positionY[0]};
 		//on vérifie que la tête n'est pas sur la même case que le corp d'un serpent
 		for(var i=0;i<map.snakeList.length;i++){
 			var snake = map.snakeList[i]
-			if(snake!=this)
-				for(var j=1;j<snake.length;j++)
-					if(teteX==snake.positionX[j]&&teteY==snake.positionY[j])
-						this.dead();
+			for(var j=0;j<snake.length;j++){
+				if((snake!=this||j>0)&&pos_tete.x==snake.positionX[j]&&pos_tete.y==snake.positionY[j])
+					this.dead();
+			}
 		}
 		//on vérifie que la tête n'est pas sur la même case qu'un obstacle
 		for(var i=0;i<map.obstacleList.length&&this.life;i++){
 			var obst = map.obstacleList[i]
-			if(teteX==obst.positionX && teteY==obst.positionY)
+			if(pos_tete.x==obst.positionX && pos_tete.y==obst.positionY)
 				this.dead();
 		}
 		//on vérifie que la tête n'est pas sur la même case qu'un aliment
 		for(var i=0;i<map.foodList.length;i++){
 			var food = map.foodList[i]
-			if(food.life&&teteX==food.positionX&&teteY==food.positionY)
+			if(food.life&&pos_tete.x==food.positionX&&pos_tete.y==food.positionY)
 				this.eat(food, map);
 		}
+	}
+	if(this.length<2){
+		console.log("mort pas longueur trop faible");
+		this.length = 2;
+		this.dead();
+	}
+	if(this.score<0){
+		console.log("mort pas score trop faible");
+		this.dead();
 	}
 }
 
@@ -52,10 +61,10 @@ Snake.prototype.eat = function(food, map){
 }
 Snake.prototype.dead = function(){
 	this.life = false
-	this.sprite = spriteSnakeSkel;
+	this.texture = spriteSnakeSkel;
 }
 //renvoi la partie d'image a afficher
-Snake.prototype.chooseImgPart = function(i){
+Snake.prototype.getSprite = function(i){
 	var r;
 	//si on est sur le bout de la queue
 	if(i==this.length-1){

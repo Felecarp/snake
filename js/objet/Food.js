@@ -1,9 +1,10 @@
 //varietes connus
 var VARIETES = [
-	new Variety(0, 0,0),
-	new Variety(1,10,1),
-	new Variety(2,15,1),
-	new Variety(3,20,1),
+	new Variety(0,0,0),
+	new Variety(1,3,1),
+	new Variety(2,4,1),
+	new Variety(3,5,1),
+	//new Variety(4,-5,-1)
 ]
 //objet aliments
 function Food(variete,pX,pY){

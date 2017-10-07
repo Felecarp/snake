@@ -61,9 +61,10 @@ Map.prototype.draw = function(ctx,width,height){
 	for(var i=0;i<this.dimensionX;i++){
 		for(var j=0;j<this.dimensionY;j++){
 			//la grille
-			ctx.strokeRect(i*DIMCASESX,j*DIMCASESY,DIMCASESX,DIMCASESY);
+			//ctx.strokeRect(i*DIMCASESX,j*DIMCASESY,DIMCASESX,DIMCASESY);
 			//le terrain
 			ctx.drawImage(spriteGround,32*this.ground[i][j],0,32,32,i*DIMCASESX,j*DIMCASESY,DIMCASESX,DIMCASESY);
+			//ctx.drawImage(spriteGround,64*3,64,64,64,i*DIMCASESX,j*DIMCASESY,DIMCASESX,DIMCASESY);
 		}
 	}
 	//les aliments
@@ -82,8 +83,8 @@ Map.prototype.draw = function(ctx,width,height){
 	for(var i=0;i<this.snakeList.length;i++){
 		var snake = this.snakeList[i];
 		for(var j=0;j<snake.length;j++){
-			var imgPart =snake.chooseImgPart(j);
-			ctx.drawImage(snake.sprite,(imgPart%4)*32,parseInt(imgPart/4)*32,32,32,snake.positionX[j]*DIMCASESX,snake.positionY[j]*DIMCASESY,DIMCASESX,DIMCASESY);
+			var sprite = snake.getSprite(j);
+			ctx.drawImage(snake.texture,(sprite%4)*32,parseInt(sprite/4)*32,32,32,snake.positionX[j]*DIMCASESX,snake.positionY[j]*DIMCASESY,DIMCASESX,DIMCASESY);
 		}
 	}
 	//le score
@@ -96,7 +97,7 @@ Map.prototype.update = function(){
 	//on déplace tous les serpents en fonction de la direstion indiqué par leur controlleur
 	for(var i=0;i<this.snakeList.length;i++){
 		var snake = this.snakeList[i]
-		snake.actuContact(this);
+		snake.update(this);
 		if(snake.life){
 			//on fait suivre le corp
 			for(var i=snake.length;i>0;i--){
@@ -128,7 +129,7 @@ Map.prototype.addSnake = function(img, no_controleur, positionX, positionY){
 	this.snakeList.push(snake);
 	for(var i=0;i<snake.length;i++){
 		snake.positionX[i]=positionX;
-		snake.positionY[i]=positionY;
+		snake.positionY[i]=positionY+i;
 	}
 }
 //ajoute un aliment à la carte et renvoi false en cas d'impossiblité
